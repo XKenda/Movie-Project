@@ -1,0 +1,27 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "nodemon ./app.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.6",
+    "debug": "~2.6.9",
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
+    "express": "~4.16.1",
+    "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.2.4",
+    "morgan": "~1.9.1",
+    "validator": "^13.15.26"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.9"
+  }
+}
