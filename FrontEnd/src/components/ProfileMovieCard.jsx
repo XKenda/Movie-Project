@@ -1,20 +1,13 @@
 import { MdFavorite } from "react-icons/md";
 import { NavLink } from "react-router-dom";
-import { deleteFavMovie } from "../../API/authApi";
-import toast, { Toaster } from "react-hot-toast";
 
-const ProfileMovieCard = ({movie, favIds, setFavIds, favMovies, setFavMovies}) => {
+const ProfileMovieCard = ({movie, deleteMovieFromFav}) => {
 
     const {movieId, movieTitle, posterUrl} = movie
 
     const handleFav = async () => {
         try {
-            setFavMovies(favMovies.filter(movie => movie.movieId !== movieId));
-            setFavIds(favIds.filter(id=> id !== movieId))
-            const res = await deleteFavMovie({movieId})
-
-            if(res.data.success)
-                toast(`${movieTitle} delted from from favourite`)
+            await deleteMovieFromFav({movieId: movie.movieId, title: movie.movieTitle})
         } catch (e) {
             console.log(e)
         }
@@ -27,7 +20,6 @@ const ProfileMovieCard = ({movie, favIds, setFavIds, favMovies, setFavMovies}) =
                 <h3 className="profile-movie-title my-5 text-2xl max-w-50 text-center">{movieTitle}</h3>
                 <p className="btn fav-icon-con text-red-600 text-3xl flex justify-center" onClick={handleFav}><MdFavorite className="" /></p>
             </div>
-            <Toaster />
         </div>
     );
 };

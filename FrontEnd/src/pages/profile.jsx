@@ -4,7 +4,10 @@ import ProfileMovieCard from "../components/ProfileMovieCard";
 import LSpinner from "../components/spinner";
 import Marquee from "react-fast-marquee";
 
-export const Profile = ({user, favMovies, favIds, setFavIds, setFavMovies})=> {
+export const Profile = ({user,
+                        deleteMovieFromFav,
+                        favMovies})=> {
+                        
     const [profileFavouriteMovies, setProfileFavouriteMovies] = useState([])
 
     useEffect(()=>{
@@ -30,16 +33,13 @@ export const Profile = ({user, favMovies, favIds, setFavIds, setFavMovies})=> {
                 <hr className="text-white w-50 my-2" />
                 {
                     profileFavouriteMovies.length > 0?
-                    <Marquee play={profileFavouriteMovies.length > 5? true : false} speed={20} className="fav-movie-con flex">
+                    <Marquee play={profileFavouriteMovies.length > 4? true : false} speed={20} className="fav-movie-con flex">
                     { 
                         profileFavouriteMovies.map((favMovie)=>(
                             <ProfileMovieCard 
                             key={favMovie.movieId} 
                             movie={favMovie} 
-                            favMovies={favMovies}
-                            setFavMovies={setFavMovies}
-                            favIds={favIds}
-                            setFavIds={setFavIds}
+                            deleteMovieFromFav={deleteMovieFromFav}
                             />
                         ))
                     } 
