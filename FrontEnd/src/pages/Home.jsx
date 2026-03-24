@@ -17,7 +17,7 @@ const API_OPTIONS = {
     },
 };
 
-export default function Home({favIds, setFavIds, favMovies, setFavMovies}) {
+export default function Home({favIds, deleteMovieFromFav, addMovieToFav}) {
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
     const [moviesList, setMoviesList] = useState([]);
@@ -125,10 +125,9 @@ export default function Home({favIds, setFavIds, favMovies, setFavMovies}) {
                     <MovieCard 
                         key={movie.id} 
                         movie={movie} 
-                        favIds={favIds} 
-                        setFavIds={setFavIds}
-                        favMovies={favMovies}
-                        setFavMovies={setFavMovies}
+                        deleteMovieFromFav={deleteMovieFromFav}
+                        addMovieToFav={addMovieToFav}
+                        favIds={favIds}
                         />
                 ))}
                 </ul>

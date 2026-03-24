@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { MdFavorite } from "react-icons/md";
 import { NavLink } from "react-router-dom";
-import { addFavMovie, deleteFavMovie } from "../../API/authApi";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
-const MovieCard = ({movie,
-    favIds, setFavIds, favMovies, setFavMovies}) => {
+const MovieCard = ({movie, favIds, deleteMovieFromFav, addMovieToFav}) => {
 
         const {id, title, vote_average, poster_path, release_date, original_language} = movie
 
         const [inFav, setInFav] = useState(false)
-        const toastOption = {duration: 2000, style:{boxShadow: "none"}}
         const cls = `fav-icon-con btn ${inFav? 'text-red-600 red-heart-ani': 'text-gray-400 gray-heart-ani'}`
         
         useEffect(()=>{
@@ -26,22 +23,9 @@ const MovieCard = ({movie,
             try {
                 setInFav(!inFav)
                 if(inFav){
-                    const movieId = id.toString()
-                    setFavIds(favIds.filter(id => id !== movieId))
-                    setFavMovies(favMovies.filter(movie => movie.id !== id))
-                    toast(`${title} deleted from favourite`, toastOption)
-                    await deleteFavMovie({movieId})
-
-                        
+                    await deleteMovieFromFav({movieId: id, title})
                 } else {
-                    const MovieData = {movieId: id, movieTitle: title, posterUrl: poster_path}
-                    favIds.push(id.toString())
-                    setFavIds(favIds)
-                    favMovies.push(MovieData)
-                    setFavMovies(favMovies)
-                    toast(`${title} added to favourite`, toastOption)
-                    await addFavMovie(MovieData)
-                    
+                    await addMovieToFav({movie})
                 }
             } catch (e) {
                 setInFav(!inFav)

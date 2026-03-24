@@ -5,12 +5,13 @@ import Navbar from "./components/Navbar";
 import LogIn from "./pages/LogIn";
 import Profile from "./pages/profile";
 import { useEffect, useState } from "react";
-import { getFavMovies, getUser } from "../API/authApi";
+import { addFavMovie, deleteFavMovie, getFavMovies, getUser } from "../API/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserState } from "./redux/rudecers/user.reducer";
 import Loading from "./pages/Loading";
 import MoviePage from "./pages/MoviePage";
 import LSpinner from "./components/spinner";
+import toast from "react-hot-toast";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -19,7 +20,41 @@ export default function App() {
   const [favIdsIsLoading, setFavIdsIsLoading] = useState(false);
   const userState = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
+
+
+  const toastOption = {duration: 2000, style:{boxShadow: "none"}}
+
+
+  const addIdToFav = (id) => {
+    favIds.push(id.toString())
+    setFavIds(favIds)
+  }
+
+  const deleteIdFromFav = (movieId) => {
+    setFavIds(favIds.filter(id => id !== movieId.toString()))
+  }
   
+  const addMovieToFav = async ({movie: {id, title, poster_path}}) => {
+    const MovieData = {movieId: id, movieTitle: title, posterUrl: poster_path}
+    if(favIds.includes(MovieData.movieId.toString()))
+      return toast("already in fav")
+    favMovies.push(MovieData)
+    setFavMovies(favMovies)
+    addIdToFav(id)
+    toast(`${title} added to favourite`, toastOption)
+    await addFavMovie(MovieData)
+  }
+
+  const deleteMovieFromFav = async ({movieId, title}) => {
+    if(!favIds.includes(movieId.toString()))
+      return toast("Cann't delte this movie")
+    setFavMovies(favMovies.filter(movie => movie.movieId !== movieId))
+    toast(`${title} deleted from favourite`, toastOption)
+    deleteIdFromFav(movieId)
+    await deleteFavMovie({movieId})
+  }
+
+
   useEffect(() => {
     async function getData() {
       try {
@@ -70,10 +105,9 @@ export default function App() {
               </div>
             ) : (
               <Home   
-                favIds={favIds} 
-                setFavIds={setFavIds} 
-                favMovies={favMovies}
-                setFavMovies={setFavMovies}
+                deleteMovieFromFav={deleteMovieFromFav}
+                addMovieToFav={addMovieToFav}
+                favIds={favIds}
                 />
             )
           }
@@ -91,6 +125,7 @@ export default function App() {
                 user={user}
                 favIds={favIds}
                 setFavIds={setFavIds}
+                deleteMovieFromFav={deleteMovieFromFav}
               />
             ) : (
               <Loading />
