@@ -107,7 +107,7 @@ export default function Home({favIds, setFavIds, favMovies, setFavMovies}) {
                                 }
                             </ul>
                             :
-                            <p className="no-trend-text">No trending movies at time</p>
+                            <p className="no-trend-text text-white text-center text-2xl">No trending movies at time</p>
                         }
                     </div>
                 </section>

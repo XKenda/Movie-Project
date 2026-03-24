@@ -10,11 +10,11 @@ const ProfileMovieCard = ({movie, favIds, setFavIds, favMovies, setFavMovies}) =
     const handleFav = async () => {
         try {
             setFavMovies(favMovies.filter(movie => movie.movieId !== movieId));
-            setFavIds(favIds.filter((id)=> {return id !== movieId}))
+            setFavIds(favIds.filter(id=> id !== movieId))
             const res = await deleteFavMovie({movieId})
 
             if(res.data.success)
-                toast("movie delted from from favourite")
+                toast(`${movieTitle} delted from from favourite`)
         } catch (e) {
             console.log(e)
         }

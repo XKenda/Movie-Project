@@ -29,15 +29,17 @@ const MovieCard = ({movie,
                     const movieId = id.toString()
                     setFavIds(favIds.filter(id => id !== movieId))
                     setFavMovies(favMovies.filter(movie => movie.id !== id))
-                    toast('Movie deleted from favourite', toastOption)
+                    toast(`${title} deleted from favourite`, toastOption)
                     await deleteFavMovie({movieId})
 
                         
                 } else {
                     const MovieData = {movieId: id, movieTitle: title, posterUrl: poster_path}
-                    setFavIds(favIds.push(id.toString()))
-                    setFavMovies(favMovies.push(movie))
-                    toast('Movie added to favourite', toastOption)
+                    favIds.push(id.toString())
+                    setFavIds(favIds)
+                    favMovies.push(MovieData)
+                    setFavMovies(favMovies)
+                    toast(`${title} added to favourite`, toastOption)
                     await addFavMovie(MovieData)
                     
                 }
