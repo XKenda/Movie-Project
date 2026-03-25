@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import MovieCard from "../components/MovieCard";
 import ProfileMovieCard from "../components/ProfileMovieCard";
-import LSpinner from "../components/spinner";
 import Marquee from "react-fast-marquee";
 
 export const Profile = ({user, favMovies, favIds, setFavIds, setFavMovies})=> {

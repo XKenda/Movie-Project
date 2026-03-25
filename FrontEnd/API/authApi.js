@@ -21,6 +21,14 @@ export const getTrendingMovies = ()=>{
     return api.get('/movie/trend')
 }
 
+export const addWatchedMovie = ({movieId, movieTitle, posterUrl}) => {
+    return api.post('/movie/watched', {movieId, movieTitle, posterUrl})
+}
+
+export const getWatchedMovie = () => {
+    return api.get('/movie/watched')
+}
+
 export const addFavMovie = ({movieId, movieTitle, posterUrl}) => {
 
     return api.post('/movie/favourite', {movieId, movieTitle, posterUrl})
