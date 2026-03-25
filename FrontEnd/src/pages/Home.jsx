@@ -3,25 +3,16 @@ import { useDebounce } from "react-use";
 import Search from "../components/Search";
 import MovieCard from "../components/MovieCard";
 import LSpinner from "../components/spinner";
-import { getTrendingMovies, saveSearch } from "../../API/authApi";
+import { getTrendingMovies } from "../../API/authApi";
 import TrendingMovieCard from "../components/trendingMovieCard";
 
 
-const API_BASE_URL = "https://api.themoviedb.org/3";
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-const API_OPTIONS = {
-    method: "GET",
-    headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${API_KEY}`,
-    },
-};
 
-export default function Home({favIds, deleteMovieFromFav, addMovieToFav}) {
+
+export default function Home({favIds, deleteMovieFromFav, addMovieToFav, fetchMovies, moviesList}) {
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-    const [moviesList, setMoviesList] = useState([]);
-    // const [favoruiteIds, setFavouriteIds] = useState([])
+
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -30,32 +21,24 @@ export default function Home({favIds, deleteMovieFromFav, addMovieToFav}) {
 
     useDebounce(() => setDebouncedSearchTerm(searchTerm), 500, [searchTerm]);
 
-    const fetchMovies = async (query = "") => {
-        setIsLoading(true);
-        setErrorMessage("");
-
-        try {
-        const endpoint = query
-            ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
-            : `${API_BASE_URL}/discover/movie?sort-by=popularity.desc`;
-        const response = await fetch(endpoint, API_OPTIONS);
-        if (!response.ok) throw new Error("Failed to fetch movies");
-
-        const data = await response.json();
-        setMoviesList(data.results || []);
-        if(query)
-            await saveSearch({movie:data.results[0]})
-        } catch (error) {
-        console.error(error);
-        setErrorMessage("Error fetching movies. Please try again later.");
-        } finally {
-        setIsLoading(false);
-        }
-    };
 
     useEffect(() => {
-        fetchMovies(debouncedSearchTerm);
-    }, [debouncedSearchTerm]);
+        async function getData() {
+
+            try{
+                setIsLoading(true)
+                const message = await fetchMovies(debouncedSearchTerm);
+                if(message)
+                    setErrorMessage(message)
+            } catch (e) {
+                console.log(e)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+    getData()
+    }, [debouncedSearchTerm,]);
 
     useEffect(()=>{
         async function getData() {
@@ -107,7 +90,7 @@ export default function Home({favIds, deleteMovieFromFav, addMovieToFav}) {
                                 }
                             </ul>
                             :
-                            <p className="no-trend-text text-white text-center text-2xl">No trending movies at time</p>
+                            <p className="no-trend-text text-gray-400 text-center text-2xl">No trending movies at time</p>
                         }
                     </div>
                 </section>

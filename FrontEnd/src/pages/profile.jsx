@@ -1,16 +1,11 @@
-import { useEffect, useState } from "react";
 import ProfileMovieCard from "../components/ProfileMovieCard";
 import Marquee from "react-fast-marquee";
+import ProfileWatchedMovieCard from "../components/ProfileWatchedMovieCard";
 
 export const Profile = ({user,
                         deleteMovieFromFav,
-                        favMovies})=> {
-                        
-    const [profileFavouriteMovies, setProfileFavouriteMovies] = useState([])
-
-    useEffect(()=>{
-        setProfileFavouriteMovies(favMovies)
-    }, [favMovies])
+                        favMovies,
+                        watchedMovies})=> {
 
     return (
         <div key={user.id} className="profile-con py-30 md:px-30 sm:px-10">
@@ -30,10 +25,10 @@ export const Profile = ({user,
                 <h2 className="">Favourite Movies</h2>
                 <hr className="text-white w-50 my-2" />
                 {
-                    profileFavouriteMovies.length > 0?
-                    <Marquee play={profileFavouriteMovies.length > 4? true : false} speed={20} className="fav-movie-con flex">
+                    favMovies.length > 0?
+                    <Marquee play={favMovies.length > 4? true : false} speed={20} className="fav-movie-con flex">
                     { 
-                        profileFavouriteMovies.map((favMovie)=>(
+                        favMovies.map((favMovie)=>(
                             <ProfileMovieCard 
                             key={favMovie.movieId} 
                             movie={favMovie} 
@@ -49,13 +44,12 @@ export const Profile = ({user,
                 <h2 className="">Watch History</h2>
                 <hr className="text-white w-50 my-2" />
                 {
-                    // favIsLoading? <p className="fav-loading"><LSpinner /></p> :
-                    // !favMovies.length?
-                    // <p className="no-fav-movies text-center text-3xl text-gray-400 mt-10">{user.firstName} has not watched something yet</p>
-                    // : 
-                    // favMovies.map((favMovie)=>(
-                    //     <MovieCard key={favMovie.movieId} movie={favMovie} />
-                    // ))
+                    watchedMovies.length === 0?
+                    <p className="no-fav-movies text-center text-3xl text-gray-400 mt-10">{user.firstName} has not watched something yet</p>
+                    : 
+                    watchedMovies.map((Watched)=>(
+                        <ProfileWatchedMovieCard key={Watched.movieId} movie={Watched} />
+                    ))
                 }
             </div>
         </div>
