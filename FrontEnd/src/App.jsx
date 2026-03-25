@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar";
 import LogIn from "./pages/LogIn";
 import Profile from "./pages/profile";
 import { useEffect, useState } from "react";
-import { addFavMovie, deleteFavMovie, getFavMovies, getUser } from "../API/authApi";
+import { addFavMovie, addWatchedMovie, deleteFavMovie, getFavMovies, getUser, getWatchedMovie, saveSearch } from "../API/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserState } from "./redux/rudecers/user.reducer";
 import Loading from "./pages/Loading";
@@ -13,16 +13,48 @@ import MoviePage from "./pages/MoviePage";
 import LSpinner from "./components/spinner";
 import toast from "react-hot-toast";
 
+const API_BASE_URL = "https://api.themoviedb.org/3";
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+const API_OPTIONS = {
+    method: "GET",
+    headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${API_KEY}`,
+    },
+};
+
 export default function App() {
   const [user, setUser] = useState(null);
+  
+  const [moviesList, setMoviesList] = useState([]);
   const [favMovies, setFavMovies] = useState([]);
   const [favIds, setFavIds] = useState([]);
   const [favIdsIsLoading, setFavIdsIsLoading] = useState(false);
+  const [watchedIds, setWatchedIds] = useState([])
+  const [watchedMovies, setWatchedMovies] = useState([])
   const userState = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
 
-
   const toastOption = {duration: 2000, style:{boxShadow: "none"}}
+
+
+  const fetchMovies = async (query = "") => {
+      try {
+      const endpoint = query
+          ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+          : `${API_BASE_URL}/discover/movie?sort-by=popularity.desc`;
+      const response = await fetch(endpoint, API_OPTIONS);
+      if (!response.ok) throw new Error("Failed to fetch movies");
+
+      const data = await response.json();
+      setMoviesList(data.results || []);
+      if(query)
+          await saveSearch({movie:data.results[0]})
+      } catch (error) {
+      console.error(error);
+      return error.message
+      }
+  };
 
 
   const addIdToFav = (id) => {
@@ -54,6 +86,19 @@ export default function App() {
     await deleteFavMovie({movieId})
   }
 
+  const addIdToWatched = (id) => {
+    watchedIds.push(id)
+    setWatchedIds(watchedIds)
+  }
+
+  const addWatchMovie = async ({movie: {id, title, poster_path}}) => {
+    const MovieData = {movieId: id, movieTitle: title, posterUrl: poster_path}
+    watchedMovies.push(MovieData)
+    setWatchedMovies(watchedMovies)
+    addIdToWatched(id)
+    await addWatchedMovie(MovieData)
+  }
+
 
   useEffect(() => {
     async function getData() {
@@ -80,12 +125,20 @@ export default function App() {
     async function getData() {
       setFavIdsIsLoading(true);
       const favRes = await getFavMovies();
+      const watchedRes = await getWatchedMovie();
       setFavMovies(favRes.data.data);
       if (favRes.data.success) {
         const f = await favRes.data.data.map((m) => {
           return m.movieId;
         });
         setFavIds(f);
+      }
+      setWatchedMovies(watchedRes.data.data)
+      if(watchedRes.data.success) {
+        const watched = watchedRes.data.data.map((movie)=> {
+            return movie.movieId
+        })
+        setWatchedIds(watched)
       }
       setFavIdsIsLoading(false);
     }
@@ -104,7 +157,9 @@ export default function App() {
                 <LSpinner />
               </div>
             ) : (
-              <Home   
+              <Home
+              fetchMovies={fetchMovies}
+              moviesList={moviesList}
                 deleteMovieFromFav={deleteMovieFromFav}
                 addMovieToFav={addMovieToFav}
                 favIds={favIds}
@@ -114,18 +169,16 @@ export default function App() {
         />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/log-in" element={<LogIn />} />
-        <Route path="/movie/:id" element={<MoviePage />} />
+        <Route path="/movie/:id" element={<MoviePage moviesList={moviesList} />} />
         <Route
           path="/profile"
           element={
             user ? (
               <Profile
-                favMovies={favMovies}
-                setFavMovies={setFavMovies}
                 user={user}
-                favIds={favIds}
-                setFavIds={setFavIds}
+                favMovies={favMovies}
                 deleteMovieFromFav={deleteMovieFromFav}
+                watchedMovies={watchedMovies}
               />
             ) : (
               <Loading />
