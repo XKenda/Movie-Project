@@ -9,7 +9,7 @@ import TrendingMovieCard from "../components/trendingMovieCard";
 
 
 
-export default function Home({favIds, deleteMovieFromFav, addMovieToFav, fetchMovies, moviesList}) {
+export default function Home({favIds, deleteMovieFromFav, addMovieToFav, fetchMovies, moviesList, watchedIds}) {
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
@@ -111,6 +111,7 @@ export default function Home({favIds, deleteMovieFromFav, addMovieToFav, fetchMo
                         deleteMovieFromFav={deleteMovieFromFav}
                         addMovieToFav={addMovieToFav}
                         favIds={favIds}
+                        watchedIds={watchedIds}
                         />
                 ))}
                 </ul>

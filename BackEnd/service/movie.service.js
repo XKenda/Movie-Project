@@ -66,7 +66,8 @@ export const selectWatchedMovies = async (userId) => {
         const data = await PDB.select({
             movieId: latestWatched.movieId,
             movieTitle: latestWatched.movieTitle,
-            posterUrl: latestWatched.posterUrl
+            posterUrl: latestWatched.posterUrl,
+            watchedAt: latestWatched.watchedAt
         })
         .from(latestWatched)
         .where(eq(latestWatched.userId, userId));
@@ -115,9 +116,3 @@ export const deleteFavMovie = async ({userId, movieId}) => {
         return e
     }
 }
-
-// export const selectFavMovie = async (userId, movieId) => {
-//     try {
-//         data = await PDB.select().from(favouriteMovies).where(sql`${favouriteMovies.userId} = ${userId} and ${favouriteMovies.movieId} = ${movieId}`)
-//     }
-// }

@@ -32,6 +32,7 @@ export default function App() {
   const [favIdsIsLoading, setFavIdsIsLoading] = useState(false);
   const [watchedIds, setWatchedIds] = useState([])
   const [watchedMovies, setWatchedMovies] = useState([])
+  const [watchedIsLoading, setWatchedIsLoading] = useState(false)
   const userState = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
 
@@ -42,7 +43,7 @@ export default function App() {
       try {
       const endpoint = query
           ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
-          : `${API_BASE_URL}/discover/movie?sort-by=popularity.desc`;
+          : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
       const response = await fetch(endpoint, API_OPTIONS);
       if (!response.ok) throw new Error("Failed to fetch movies");
 
@@ -76,7 +77,7 @@ export default function App() {
     toast(`${title} added to favourite`, toastOption)
     await addFavMovie(MovieData)
   }
-
+  
   const deleteMovieFromFav = async ({movieId, title}) => {
     if(!favIds.includes(movieId.toString()))
       return toast("Cann't delte this movie")
@@ -85,14 +86,15 @@ export default function App() {
     deleteIdFromFav(movieId)
     await deleteFavMovie({movieId})
   }
-
+  
   const addIdToWatched = (id) => {
-    watchedIds.push(id)
+    watchedIds.push(id.toString())
     setWatchedIds(watchedIds)
   }
-
+  
   const addWatchMovie = async ({movie: {id, title, poster_path}}) => {
-    const MovieData = {movieId: id, movieTitle: title, posterUrl: poster_path}
+    const watchedAt = new Date().toISOString()
+    const MovieData = {movieId: id, movieTitle: title, posterUrl: poster_path, watchedAt}
     watchedMovies.push(MovieData)
     setWatchedMovies(watchedMovies)
     addIdToWatched(id)
@@ -124,6 +126,7 @@ export default function App() {
   useEffect(() => {
     async function getData() {
       setFavIdsIsLoading(true);
+      setWatchedIsLoading(true)
       const favRes = await getFavMovies();
       const watchedRes = await getWatchedMovie();
       setFavMovies(favRes.data.data);
@@ -141,6 +144,7 @@ export default function App() {
         setWatchedIds(watched)
       }
       setFavIdsIsLoading(false);
+      setWatchedIsLoading(false)
     }
 
     getData();
@@ -158,6 +162,7 @@ export default function App() {
               </div>
             ) : (
               <Home
+              watchedIds={watchedIds}
               fetchMovies={fetchMovies}
               moviesList={moviesList}
                 deleteMovieFromFav={deleteMovieFromFav}
@@ -169,7 +174,7 @@ export default function App() {
         />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/log-in" element={<LogIn />} />
-        <Route path="/movie/:id" element={<MoviePage moviesList={moviesList} />} />
+        <Route path="/movie/:id" element={watchedIsLoading? <Loading />: <MoviePage addWatchMovie={addWatchMovie} moviesList={moviesList} watchedIds={watchedIds} />} />
         <Route
           path="/profile"
           element={
