@@ -38,7 +38,7 @@ export const Profile = ({user,
                     } 
                 </Marquee> :
                 <p className="no-fav-movies text-center text-3xl text-gray-400 mt-10">There is no favourite movies</p>
-                }
+            }
             </div>
                 <div className="fav-movies mt-20 text-white">
                 <h2 className="">Watch History</h2>
@@ -47,9 +47,13 @@ export const Profile = ({user,
                     watchedMovies.length === 0?
                     <p className="no-fav-movies text-center text-3xl text-gray-400 mt-10">{user.firstName} has not watched something yet</p>
                     : 
+                    <Marquee play={watchedMovies.length > 4? true : false} speed={20} className="fav-movie-con flex">
+                    {
                     watchedMovies.map((Watched)=>(
                         <ProfileWatchedMovieCard key={Watched.movieId} movie={Watched} />
                     ))
+                    }
+                    </Marquee>
                 }
             </div>
         </div>

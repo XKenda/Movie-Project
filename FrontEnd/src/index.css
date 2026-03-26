@@ -201,3 +201,27 @@ main , .sign-up-con, .log-in-con, .profile-con {
   cursor: pointer;
 }
 
+.movie-page-span {
+  @apply text-gray-500
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #ccc;
+}
+
+
+.overlay {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.poster-wrapper:hover .overlay {
+  display: none;
+}
