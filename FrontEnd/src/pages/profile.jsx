@@ -18,7 +18,7 @@ export const Profile = ({user,
         async function getWidth() {
 
             const favConWidth = favConRef.current.offsetWidth
-            const watchedConWidth = <watchedConRef className="current offsetWidth"></watchedConRef>
+            const watchedConWidth = watchedConRef.current.offsetWidth
             
             const FavVisible = favConWidth / MovieCardWidth
             const WatchedVisible = watchedConWidth / MovieCardWidth;
