@@ -1,4 +1,4 @@
-import { IoIosEye } from "react-icons/io";
+
 import { NavLink } from "react-router-dom";
 
 const ProfileWatchedMovieCard = ({movie}) => {
