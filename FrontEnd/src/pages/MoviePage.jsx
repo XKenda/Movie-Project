@@ -33,13 +33,13 @@ const MoviePage = ({moviesList, watchedIds, addWatchMovie}) => {
 
   return (
     <div className="movie-con text-white text-4xl mx-20 py-40">
-      <div className="movie border rounded-2xl p-15 border-amber-400 flex justify-between wrap-normal">
-        <div className="img-con flex flex-col gap-10">
+      <div className="movie border rounded-2xl p-15 border-amber-400 flex justify-between gap-10 flex-col lg:flex-row items-center">
+        <div className="img-con flex flex-col gap-10 items-center">
           <img className="movie-poster w-90 rounded-2xl" src={poster_path? `https://image.tmdb.org/t/p/w500${poster_path}` : '/no-movie.png'} alt={title} />
           <h2 className="movie-title" >{title}</h2>
         </div>
-        <div className="movie-info-con w-150 flex flex-col gap-10 text-2xl wrap-normal">
-          <p className="overview"><span className="movie-page-span">Overview :</span> {overview}</p>
+        <div className="movie-info-con max-w-150 flex flex-col gap-10 text-2xl">
+          <p className="overview text-[20px] md:text-2xl"><span className="movie-page-span">Overview :</span> {overview}</p>
           <p className="adult-text"><span className="movie-page-span">Adult :</span> {adult? "yes": "no"}</p>
           <p className="language"><span className="movie-page-span">Language :</span> {original_language}</p>
           <p className="release-date"><span className="movie-page-span">Release Date : </span>{release_date}</p>
