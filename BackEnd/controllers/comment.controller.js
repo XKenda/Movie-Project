@@ -1,4 +1,4 @@
-import { decreaseCommentLikes, deleteExistingComment, deleteUserLike, getAllUserLikes, increaseCommentLikes, insertNewComment, saveUserLike, selectComments, updateExistingComment } from "../service/comment.service.js"
+import { decreaseCommentLikes, deleteAllLikesOnComment, deleteExistingComment, deleteUserLike, getAllUserLikes, increaseCommentLikes, insertNewComment, saveUserLike, selectComments, updateExistingComment } from "../service/comment.service.js"
 
 
 export const addNewComment = async (req, res, next)=> {
@@ -48,6 +48,7 @@ export const DeleteComment = async (req, res, next) => {
         const commentId = req.params.id
 
         const data = await deleteExistingComment(userId, commentId);
+        await deleteAllLikesOnComment({commentId})
 
         res.status(200).send('deleted')
 

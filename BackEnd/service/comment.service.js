@@ -99,3 +99,11 @@ export const getAllUserLikes = async ({userId}) => {
         throw new Error(e.message)
     }
 } 
+
+export const deleteAllLikesOnComment = async ({commentId}) => {
+    try {
+        await Likes.deleteMany({commentId})
+    } catch (e) {
+        throw new Error(e.message)
+    }
+}
