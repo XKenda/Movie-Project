@@ -51,7 +51,7 @@ export const deleteExistingComment = async (owner, commentId) => {
 
 export const increaseCommentLikes = async ({commentId})=>{
     try {
-        await Comment.findOneAndUpdate({_id: movieId}, {$inc : {likes: 1}})
+        await Comment.findOneAndUpdate({_id: commentId}, {$inc : {likes: 1}})
 
         return true
     } catch (e) {
@@ -61,7 +61,7 @@ export const increaseCommentLikes = async ({commentId})=>{
 
 export const decreaseCommentLikes = async ({commentId})=>{
     try {
-        await Comment.findOneAndUpdate({_id: movieId}, {$inc : {likes: -1}})
+        await Comment.findOneAndUpdate({_id: commentId}, {$inc : {likes: -1}})
 
         return true
     } catch (e) {

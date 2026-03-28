@@ -9,18 +9,20 @@ const Comment = ({comment, AllComments, userLikes, addOrRemoveLike})=>{
     const handleLikeClick = async () => {
         addOrRemoveLike({commentId: comment._id})
         if(isLiked){
-            setLikes(likes -= 1)
+            setLikes(prev => prev - 1)
             await decCommentLikes({commentId: comment._id})
         } else{
-            setLikes(likes += 1)
+            setLikes(prev => prev + 1)
             await incCommentLikes({commentId: comment._id})
         }
-    }
+    } 
 
     useEffect(()=>{
         if(userLikes.includes(comment._id))
             setIsLiked(true)
-    }, [userLikes])
+        else
+            setIsLiked(false)
+    }, [userLikes, comment._id])
 
     return (
         <div className="comment my-10">
@@ -41,8 +43,13 @@ const Comment = ({comment, AllComments, userLikes, addOrRemoveLike})=>{
             </div>
             </div>
             <div className="comment-btns text-[18px] text-gray-600 flex  items-center justify-end gap-10">
-                <button className="replay=btn btn">replay</button>
-                <button onClick={handleLikeClick} className="like-btn btn">{isLiked? <BiSolidLike className="text-amber-400" /> : <BiLike />}</button>
+                <button className="replay=btn btn">reply</button>
+                <button
+                  onClick={handleLikeClick}
+                  className={`like-btn btn text-2xl ${isLiked ? "liked" : "notliked"}`}
+                >
+                  {isLiked ? <BiSolidLike className="text-amber-400" /> : <BiLike />}
+                </button>
             </div>
         </div>
     )

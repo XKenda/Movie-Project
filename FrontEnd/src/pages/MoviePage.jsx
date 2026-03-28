@@ -55,12 +55,13 @@ const MoviePage = ({user, moviesList, watchedIds, addWatchMovie }) => {
   }
 
   const addOrRemoveLike = ({commentId}) => {
-    if(userLikes.includes(commentId))
-      setUserLikes(userLikes.filter((c) => c !== commentId))
+    if(userLikes.includes(commentId)) {
+      setUserLikes(userLikes.filter(c => c !== commentId))
+    }
+    else{
+        setUserLikes(prev => [...prev, commentId])
+    }
 
-    else
-      userLikes.push(commentId)
-      setUserLikes(userLikes)
   }
 
   async function addingNewComment() {
