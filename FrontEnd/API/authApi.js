@@ -39,6 +39,25 @@ export const getFavMovies = () => {
 }
 
 export const deleteFavMovie = ({movieId}) => {
-    console.log(movieId)
     return api.delete(`/movie/favourite/${movieId}`)
+}
+
+export const AddComment = ({movieId, parentId, text, username}) => {
+    return api.post('/comment/new', {movieId, parentId, text, username})
+}
+
+export const getComments = ({movieId}) => {
+    return api.get(`/comment/${movieId}`)
+}
+
+export const incCommentLikes = ({commentId}) => {
+    return api.post(`/comment/inc/${commentId}`)
+}
+
+export const decCommentLikes = ({commentId}) => {
+    return api.post(`/comment/dec/${commentId}`)
+}
+
+export const getUserLikes = () => {
+    return api.get('/comment/user/likes')
 }

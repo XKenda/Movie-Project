@@ -71,13 +71,13 @@ export default function Home({favIds, deleteMovieFromFav, addMovieToFav, fetchMo
             <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
             </header>
 
+            <section>
+                <div className="trending-movie-con py-10 trending">
+                    <h2 className="trending-title mb-7">Trending</h2>
             {
                 trendingLoading? <div className="trend-spinner-con"><LSpinner /></div>
                 : 
-                <section>
-                    <div className="trending-movie-con py-10 trending">
-                        <h2 className="trending-title mb-7">Trending</h2>
-                        {
+                        
                             trendingMovies.length > 0?
                             <ul>
                                 {
@@ -92,9 +92,9 @@ export default function Home({favIds, deleteMovieFromFav, addMovieToFav, fetchMo
                             :
                             <p className="no-trend-text text-gray-400 text-center text-2xl">No trending movies at time</p>
                         }
+            
                     </div>
                 </section>
-            }
 
             <section className="all-movies">
             <h2>All movies</h2>

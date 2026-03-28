@@ -190,7 +190,7 @@
   );
 }
 
-main , .sign-up-con, .log-in-con, .profile-con {
+main , .sign-up-con, .log-in-con, .profile-con, .movie-con {
   background-image: url("../public/hero-bg.png");
   background-size: cover;
   background-repeat: no-repeat;

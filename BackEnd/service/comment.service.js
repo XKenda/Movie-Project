@@ -1,11 +1,12 @@
 import Comment from "../models/comment.model.js"
+import Likes from "../models/like.model.js";
 
 
 
-export const insertNewComment = async ({userId, movieId, text, parentId})=>{
+export const insertNewComment = async ({userId, movieId, text, parentId, username})=>{
     try {
 
-        const newComment = Comment.create({userId, movieId, text, parentId});
+        const newComment = Comment.create({userId, movieId, text, parentId, username});
 
         return newComment
     } catch (e) {
@@ -47,3 +48,54 @@ export const deleteExistingComment = async (owner, commentId) => {
         throw new Error(e.message)
     }
 }
+
+export const increaseCommentLikes = async ({commentId})=>{
+    try {
+        await Comment.findOneAndUpdate({_id: movieId}, {$inc : {likes: 1}})
+
+        return true
+    } catch (e) {
+        return e
+    }
+}
+
+export const decreaseCommentLikes = async ({commentId})=>{
+    try {
+        await Comment.findOneAndUpdate({_id: movieId}, {$inc : {likes: -1}})
+
+        return true
+    } catch (e) {
+        return e
+    }
+}
+
+export const saveUserLike = async ({userId, commentId}) => {
+    try {
+        const like = await Likes.create({userId, commentId})
+
+        if(like)
+            return true
+    } catch (e) {
+        return false
+    }
+}
+
+export const deleteUserLike = async ({userId, commentId}) => {
+    try {
+        const like = await Likes.findOneAndDelete({userId, commentId})
+
+        if(like)
+            return true
+    } catch (e) {
+        return false
+    }
+}
+
+export const getAllUserLikes = async ({userId}) => {
+    try {
+        const data = (await Likes.find({userId})).map(((comment) => {return comment.commentId}))
+        return data
+    } catch (e) {
+        throw new Error(e.message)
+    }
+} 

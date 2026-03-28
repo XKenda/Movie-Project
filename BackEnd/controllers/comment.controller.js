@@ -1,12 +1,12 @@
-import { deleteExistingComment, insertNewComment, selectComments, updateExistingComment } from "../service/comment.service.js"
+import { decreaseCommentLikes, deleteExistingComment, deleteUserLike, getAllUserLikes, increaseCommentLikes, insertNewComment, saveUserLike, selectComments, updateExistingComment } from "../service/comment.service.js"
 
 
 export const addNewComment = async (req, res, next)=> {
     try {
         const userId = req.user.id;
-        const {movieId, parentId, text} = req.body
+        const {movieId, parentId, text, username} = req.body
 
-        const newComment = await insertNewComment({userId, movieId, text, parentId})
+        const newComment = await insertNewComment({userId, movieId, text, parentId, username})
 
         res.status(201).json({success: true, data: newComment})
     } catch (e) {
@@ -51,6 +51,55 @@ export const DeleteComment = async (req, res, next) => {
 
         res.status(200).send('deleted')
 
+    } catch (e) {
+        next(e)
+    }
+}
+
+export const increaseCommentLike = async (req, res, next) => {
+    try {
+        const userId = req.user.id
+        const commentId = req.params.id
+
+        const success = await increaseCommentLikes({commentId});
+        const increaseUserLikeSuccess = await saveUserLike({userId, commentId})
+
+        if(!success && !increaseUserLikeSuccess)
+            res.status(200).json({success: false})
+
+        res.status(200).json({success})
+    } catch (e) {
+        next(e)
+    }
+}
+
+export const decreaseCommentLike = async (req, res, next) => {
+    try {
+        const userId = req.user.id
+        const commentId = req.params.id
+
+        const success = await decreaseCommentLikes({commentId});
+        const deleteUserLikeSuccess = await deleteUserLike({userId, commentId})
+
+        if(!success && !deleteUserLikeSuccess)
+            res.status(200).json({success: false})
+
+        res.status(200).json({success})
+    } catch (e) {
+        next(e)
+    }
+}
+
+export const getUserLikes = async (req, res, next) => {
+    try{
+
+        const userId = req.user.id
+        const data = await getAllUserLikes({userId})
+        console.log(data)
+        if(data)
+            res.status(200).json({success: true, data})
+
+        res.status(200).json({success: false})
     } catch (e) {
         next(e)
     }
