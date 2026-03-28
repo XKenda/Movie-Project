@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { BiLike, BiSolidLike } from "react-icons/bi";
-import { decCommentLikes, incCommentLikes } from "../../API/authApi";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { decCommentLikes, DeleteComment, incCommentLikes } from "../../API/authApi";
 
-const Comment = ({comment, AllComments, userLikes, addOrRemoveLike})=>{
+const Comment = ({user, comment, AllComments, userLikes, addOrRemoveLike, removeComment})=>{
     let [likes, setLikes] = useState(comment.likes)
     const [isLiked, setIsLiked] = useState(false);
 
@@ -16,6 +17,14 @@ const Comment = ({comment, AllComments, userLikes, addOrRemoveLike})=>{
             await incCommentLikes({commentId: comment._id})
         }
     } 
+
+    const deleteComment = async () => {
+        const commentId = comment._id
+        removeComment({commentId})
+        if(user.id === comment.userId)
+            await DeleteComment({commentId})
+
+    }
 
     useEffect(()=>{
         if(userLikes.includes(comment._id))
@@ -45,11 +54,15 @@ const Comment = ({comment, AllComments, userLikes, addOrRemoveLike})=>{
             <div className="comment-btns text-[18px] text-gray-600 flex  items-center justify-end gap-10">
                 <button className="replay=btn btn">reply</button>
                 <button
-                  onClick={handleLikeClick}
-                  className={`like-btn btn text-2xl ${isLiked ? "liked" : "notliked"}`}
+                    onClick={handleLikeClick}
+                    className={`like-btn btn text-2xl ${isLiked ? "liked" : "notliked"}`}
                 >
-                  {isLiked ? <BiSolidLike className="text-amber-400" /> : <BiLike />}
+                    {isLiked ? <BiSolidLike className="text-amber-400" /> : <BiLike />}
                 </button>
+                {
+                    comment.userId === user.id? 
+                    <button onClick={deleteComment} className="trash-can btn"><FaRegTrashAlt /></button> : ''
+                }
             </div>
         </div>
     )

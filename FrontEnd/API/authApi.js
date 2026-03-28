@@ -46,6 +46,10 @@ export const AddComment = ({movieId, parentId, text, username}) => {
     return api.post('/comment/new', {movieId, parentId, text, username})
 }
 
+export const DeleteComment = ({commentId}) => {
+    return api.delete(`/comment/delete/${commentId}`)
+}
+
 export const getComments = ({movieId}) => {
     return api.get(`/comment/${movieId}`)
 }

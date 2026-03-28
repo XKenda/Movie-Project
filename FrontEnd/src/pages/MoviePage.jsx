@@ -72,6 +72,10 @@ const MoviePage = ({user, moviesList, watchedIds, addWatchMovie }) => {
     await getAllComments(id)
   }
 
+  async function removeComment({commentId}) {
+  setComments(comments.filter(comment => comment._id !== commentId))
+  }
+
 
   useEffect(() => {
     async function fun() {
@@ -143,7 +147,7 @@ const MoviePage = ({user, moviesList, watchedIds, addWatchMovie }) => {
             <div className="spinner-con"><Loading /></div>
             : comments.length > 0?
             comments.map((comment) => (
-              <Comment comment={comment} AllComments={comments} userLikes={userLikes} addOrRemoveLike={addOrRemoveLike} />
+              <Comment user={user} comment={comment} AllComments={comments} userLikes={userLikes} addOrRemoveLike={addOrRemoveLike} removeComment={removeComment} />
             )) 
             : <div className="no-comment-con flex justify-center items-center text-2xl p-10 text-gray-500"><p className="no-comments">No Comments yet</p></div>
           }
