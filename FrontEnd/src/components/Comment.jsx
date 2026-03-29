@@ -29,7 +29,6 @@ const Comment = ({user, comment, AllComments, userLikes, addOrRemoveLike, remove
         if(user.id === comment.userId)
             await DeleteComment({commentId})
 
-        
     }
 
     async function addingNewReply() {
@@ -41,10 +40,15 @@ const Comment = ({user, comment, AllComments, userLikes, addOrRemoveLike, remove
     }
 
     useEffect(()=>{
-        if(userLikes.includes(comment._id))
-            setIsLiked(true)
-        else
-            setIsLiked(false)
+        function HandleLike() {
+
+            if(userLikes.includes(comment._id))
+                setIsLiked(true)
+            else
+                setIsLiked(false)
+        }
+
+        HandleLike()
     }, [userLikes, comment._id])
 
 
@@ -56,6 +60,11 @@ const Comment = ({user, comment, AllComments, userLikes, addOrRemoveLike, remove
 
         getReplies()
     }, [])
+
+    useEffect(()=>{
+        if(replyIsOpen)
+            replyInputRef.current.focus()
+    }, [replyIsOpen])
 
     return (
         <div className="comment my-10">
@@ -76,7 +85,7 @@ const Comment = ({user, comment, AllComments, userLikes, addOrRemoveLike, remove
             </div>
             </div>
             <div className="comment-btns text-[18px] text-gray-600 flex  items-center justify-end gap-10">
-                <button onClick={()=> setReplyIsOpen(!replyIsOpen)} className="replay=btn btn">reply</button>
+                <button onClick={()=> {setReplyIsOpen(!replyIsOpen)}} className="replay=btn btn">reply</button>
                 <button
                     onClick={handleLikeClick}
                     className={`like-btn btn text-2xl ${isLiked ? "liked" : "notliked"}`}

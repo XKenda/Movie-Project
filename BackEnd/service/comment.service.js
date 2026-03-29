@@ -10,7 +10,7 @@ export const insertNewComment = async ({userId, movieId, text, parentId, usernam
 
         return newComment
     } catch (e) {
-        throw new Error(e.message)
+        return e
     }
 }
 
@@ -115,14 +115,12 @@ export const deleteAllLikesOnComment = async ({commentId}) => {
 
 const deleteComment = async ({commentId}) => {
     try {
-        const commentDeleted = await Comment.findOneAndDelete({_id: commentId});
-        console.log("Deleted comment " + commentDeleted)
+        await Comment.findOneAndDelete({_id: commentId});
+
         const replies = await Comment.find({parentId: commentId});
-        console.log("replies " + replies)
 
         if(replies.length > 0){
-
-            (await replies).map( async (reply)=>{
+            replies.map( async (reply)=>{
                 await deleteComment({commentId: reply._id})
             })
         }

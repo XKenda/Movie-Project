@@ -7,7 +7,9 @@ export const addNewComment = async (req, res, next)=> {
         const {movieId, parentId, text, username} = req.body
 
         const newComment = await insertNewComment({userId, movieId, text, parentId, username})
-
+        
+        if(newComment.message)
+            res.status(200).json({success: false, message: newComment.message})
         res.status(201).json({success: true, data: newComment})
     } catch (e) {
         next(e)
@@ -49,7 +51,7 @@ export const DeleteComment = async (req, res, next) => {
 
         const data = await deleteExistingComment(userId, commentId);
         await deleteAllLikesOnComment({commentId})
-        
+
         res.status(200).send('deleted')
 
     } catch (e) {

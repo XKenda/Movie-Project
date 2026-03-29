@@ -10,6 +10,7 @@ const MoviePage = ({user, moviesList, watchedIds, addWatchMovie }) => {
   const [Allcomments, setAllComments] = useState([]);
   const [userLikes, setUserLikes] = useState([])
   const [commentsIsLoading, setCommentsIsLoading] = useState(false);
+  const [commentErrorMessage, SetCommentErrorMessage] = useState('');
   const [isWatched, setIsWatched] = useState(false);
   const CommentInputRef = useRef(null);
 
@@ -69,9 +70,14 @@ const MoviePage = ({user, moviesList, watchedIds, addWatchMovie }) => {
 
   async function addingNewComment() {
     const commentText = CommentInputRef.current.value
+    const res = await AddComment({movieId: id, text: commentText, username: `${user.firstName} ${user.lastName}`})
+    CommentInputRef.current.value = ''
 
-    await AddComment({movieId: id, text: commentText, username: `${user.firstName} ${user.lastName}`})
+    if(!res.data.success)
+      SetCommentErrorMessage(res.data.message)
 
+    
+    
     await getAllComments(id)
   }
 
@@ -158,6 +164,7 @@ const MoviePage = ({user, moviesList, watchedIds, addWatchMovie }) => {
         <div className="comment-input-con w-full flex items-center gap-2">
           <input
             ref={CommentInputRef}
+            minLength={4}
             id="comment"
             className="comment-input border-amber-400 border rounded-2xl px-4 py-4 text-gray-300 flex-1 text-[22px]"
             type="text"
@@ -167,6 +174,12 @@ const MoviePage = ({user, moviesList, watchedIds, addWatchMovie }) => {
             <IoSend />
           </button>
         </div>
+        {
+          commentErrorMessage? 
+          <div className="comment-error-con flex w-full py-10 justify-center items-center text-2xl">
+            <p className="comment-error">{commentErrorMessage}</p>
+          </div> : ""
+        }
       </div>
     </div>
   );
