@@ -9,6 +9,10 @@ const commentSchema = new Schema({
         type: Number,
         required: [true, 'user id is required'],
     },
+    username: {
+        type: String,
+        required: [true, 'username is required']
+    },
     text: {
         type: String,
         required: true,
@@ -18,6 +22,10 @@ const commentSchema = new Schema({
     parentId: {
         type: Schema.Types.ObjectId,
         default: null,
+    },
+    likes: {
+        type: Number,
+        default: 0,
     },
     createdAt: {
         type: Date,

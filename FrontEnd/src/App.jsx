@@ -174,7 +174,7 @@ export default function App() {
         />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/log-in" element={<LogIn />} />
-        <Route path="/movie/:id" element={watchedIsLoading? <Loading />: <MoviePage addWatchMovie={addWatchMovie} moviesList={moviesList} watchedIds={watchedIds} />} />
+        <Route path="/movie/:id" element={watchedIsLoading? <Loading />: <MoviePage user={user} addWatchMovie={addWatchMovie} moviesList={moviesList} watchedIds={watchedIds} />} />
         <Route
           path="/profile"
           element={

@@ -46,7 +46,6 @@
   header img {
     @apply w-full max-w-lg h-auto object-contain mx-auto drop-shadow-md;
   }
-
 }
 
 @layer components {
@@ -142,19 +141,17 @@
   }
 
   .header-btn {
-    @apply border text-white px-4 py-2 rounded-2xl cursor-pointer max-h-10
+    @apply border text-white px-4 py-2 rounded-2xl cursor-pointer max-h-10;
   }
 
   .input-con {
-    
   }
 
   .input-label {
-
   }
 
   .input-field {
-    @apply w-100 block border p-2 rounded-2xl ml-10 my-3
+    @apply w-100 block border p-2 rounded-2xl ml-10 my-3;
   }
 
   .input-field:focus {
@@ -190,7 +187,11 @@
   );
 }
 
-main , .sign-up-con, .log-in-con, .profile-con {
+main,
+.sign-up-con,
+.log-in-con,
+.profile-con,
+.movie-con {
   background-image: url("../public/hero-bg.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -202,7 +203,7 @@ main , .sign-up-con, .log-in-con, .profile-con {
 }
 
 .movie-page-span {
-  @apply text-gray-500
+  @apply text-gray-500;
 }
 
 button:disabled {
@@ -210,7 +211,6 @@ button:disabled {
   cursor: not-allowed;
   background-color: #ccc;
 }
-
 
 .overlay {
   display: flex;
@@ -224,4 +224,48 @@ button:disabled {
 
 .poster-wrapper:hover .overlay {
   display: none;
+}
+
+.liked {
+  animation-name: like;
+  animation-duration: 0.35s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.notliked {
+  animation-name: unlike;
+  animation-duration: 0.35s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes like {
+  0% {
+    transform: scale(1);
+    color: #ffffff;
+  }
+  50% {
+    transform: scale(1.2);
+    color: #f59e0b;
+  }
+  100% {
+    transform: scale(1);
+    color: #f59e0b;
+  }
+}
+
+@keyframes unlike {
+  0% {
+    transform: scale(1);
+    color: #f59e0b;
+  }
+  50% {
+    transform: scale(0.95);
+    color: #ffffff;
+  }
+  100% {
+    transform: scale(1);
+    color: #ffffff;
+  }
 }
