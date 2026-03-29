@@ -107,15 +107,3 @@ export const deleteFavouriteMovies = async (req, res, next) => {
         next(e)
     }
 }
-
-// export const getFavMovie = async (req, res, next) => {
-//     try {
-//         const id = req.user.id;
-//         const movieId = req.body.movieId;
-
-//         const data = 
-
-//     } catch (e) {
-//         next(e)
-//     }
-// }

@@ -7,6 +7,7 @@ import Comment from "../components/Comment";
 
 const MoviePage = ({user, moviesList, watchedIds, addWatchMovie }) => {
   const [comments, setComments] = useState([]);
+  const [Allcomments, setAllComments] = useState([]);
   const [userLikes, setUserLikes] = useState([])
   const [commentsIsLoading, setCommentsIsLoading] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
@@ -46,8 +47,10 @@ const MoviePage = ({user, moviesList, watchedIds, addWatchMovie }) => {
     const commentRes = await getComments({movieId: id})
     const userLikesRes = await getUserLikes()
   
-    if(commentRes.data.success)
-      setComments(commentRes.data.data)
+    if(commentRes.data.success){
+      setAllComments(commentRes.data.data)
+      setComments(commentRes.data.data.filter((c) => c.parentId == null))
+    }
 
     if(userLikesRes.data.success)
       setUserLikes(userLikesRes.data.data)
@@ -147,7 +150,7 @@ const MoviePage = ({user, moviesList, watchedIds, addWatchMovie }) => {
             <div className="spinner-con"><Loading /></div>
             : comments.length > 0?
             comments.map((comment) => (
-              <Comment user={user} comment={comment} AllComments={comments} userLikes={userLikes} addOrRemoveLike={addOrRemoveLike} removeComment={removeComment} />
+              <Comment user={user} comment={comment} AllComments={Allcomments} userLikes={userLikes} addOrRemoveLike={addOrRemoveLike} removeComment={removeComment} />
             )) 
             : <div className="no-comment-con flex justify-center items-center text-2xl p-10 text-gray-500"><p className="no-comments">No Comments yet</p></div>
           }

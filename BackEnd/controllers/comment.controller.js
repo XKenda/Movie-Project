@@ -49,7 +49,7 @@ export const DeleteComment = async (req, res, next) => {
 
         const data = await deleteExistingComment(userId, commentId);
         await deleteAllLikesOnComment({commentId})
-
+        
         res.status(200).send('deleted')
 
     } catch (e) {

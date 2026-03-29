@@ -39,10 +39,10 @@ export const updateExistingComment = async (owner, commentId, text ) => {
 
 export const deleteExistingComment = async (owner, commentId) => {
     try {
-        const comment = await Comment.findOneAndDelete({_id : commentId, userId: owner});
-
+        const comment = await Comment.findOne({_id : commentId, userId: owner});
         if(!comment) throw new Error('cannot delete this comment')
 
+        await deleteComment({commentId: comment._id})
         return comment;
     } catch (e) {
         throw new Error(e.message)
@@ -102,7 +102,30 @@ export const getAllUserLikes = async ({userId}) => {
 
 export const deleteAllLikesOnComment = async ({commentId}) => {
     try {
-        await Likes.deleteMany({commentId})
+        await Likes.deleteMany({commentId}) 
+    } catch (e) {
+        throw new Error(e.message)
+    }
+}
+
+
+
+
+
+
+const deleteComment = async ({commentId}) => {
+    try {
+        const commentDeleted = await Comment.findOneAndDelete({_id: commentId});
+        console.log("Deleted comment " + commentDeleted)
+        const replies = await Comment.find({parentId: commentId});
+        console.log("replies " + replies)
+
+        if(replies.length > 0){
+
+            (await replies).map( async (reply)=>{
+                await deleteComment({commentId: reply._id})
+            })
+        }
     } catch (e) {
         throw new Error(e.message)
     }
