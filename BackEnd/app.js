@@ -15,7 +15,7 @@ import commentRouter from "./routes/comment.route.js";
 var app = express();
 
 app.use(cors({
-    origin: "http://localhost:5173",
+        origin: process.env.NODE_ENV? "https://movie-theater-blue.vercel.app" : "http://localhost:5173",
     credentials: true
 }))
 app.options("*", cors());
