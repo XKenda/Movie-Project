@@ -4,7 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { logIn } from "../../API/authApi";
 import LSpinner from "../components/spinner";
 
-const LogIn = ()=> {
+const LogIn = ( {getUserFunc} )=> {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -17,18 +17,14 @@ const LogIn = ()=> {
         try{
             const res = await logIn(email, password);
             
-            if(res.data.success){
-                navigate('/')
-            }  
         } catch (err) {
 
-            if(err.status === 403){
-                navigate('/')
-            } else {
                 setMessage(err.response.data)
-            }
+
         } finally {
             setIsLoading(false)
+            getUserFunc()
+            navigate('/')
         }
     }
 

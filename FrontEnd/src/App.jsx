@@ -1,11 +1,19 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import SignUp from "./pages/SignUp";
 import Navbar from "./components/Navbar";
 import LogIn from "./pages/LogIn";
 import Profile from "./pages/profile";
 import { useEffect, useState } from "react";
-import { addFavMovie, addWatchedMovie, deleteFavMovie, getFavMovies, getUser, getWatchedMovie, saveSearch } from "../API/authApi";
+import {
+  addFavMovie,
+  addWatchedMovie,
+  deleteFavMovie,
+  getFavMovies,
+  getUser,
+  getWatchedMovie,
+  saveSearch,
+} from "../API/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserState } from "./redux/rudecers/user.reducer";
 import Loading from "./pages/Loading";
@@ -16,94 +24,99 @@ import toast from "react-hot-toast";
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const API_OPTIONS = {
-    method: "GET",
-    headers: {
-        accept: "application/json",
-        Authorization: `Bearer ${API_KEY}`,
-    },
+  method: "GET",
+  headers: {
+    accept: "application/json",
+    Authorization: `Bearer ${API_KEY}`,
+  },
 };
 
 export default function App() {
   const [user, setUser] = useState(null);
-  
+
   const [moviesList, setMoviesList] = useState([]);
   const [favMovies, setFavMovies] = useState([]);
   const [favIds, setFavIds] = useState([]);
   const [favIdsIsLoading, setFavIdsIsLoading] = useState(false);
-  const [watchedIds, setWatchedIds] = useState([])
-  const [watchedMovies, setWatchedMovies] = useState([])
-  const [watchedIsLoading, setWatchedIsLoading] = useState(false)
+  const [watchedIds, setWatchedIds] = useState([]);
+  const [watchedMovies, setWatchedMovies] = useState([]);
+  const [watchedIsLoading, setWatchedIsLoading] = useState(false);
+  const navigate = useNavigate();
   const userState = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
 
-  const toastOption = {duration: 2000, style:{boxShadow: "none"}}
-
+  const toastOption = { duration: 2000, style: { boxShadow: "none" } };
 
   const fetchMovies = async (query = "") => {
-      try {
+    try {
       const endpoint = query
-          ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
-          : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
       const response = await fetch(endpoint, API_OPTIONS);
       if (!response.ok) throw new Error("Failed to fetch movies");
 
       const data = await response.json();
       setMoviesList(data.results || []);
-      if(query)
-          await saveSearch({movie:data.results[0]})
-      } catch (error) {
+      if (query) await saveSearch({ movie: data.results[0] });
+    } catch (error) {
       console.error(error);
-      return error.message
-      }
+      return error.message;
+    }
   };
 
-
   const addIdToFav = (id) => {
-    favIds.push(id.toString())
-    setFavIds(favIds)
-  }
+    favIds.push(id.toString());
+    setFavIds(favIds);
+  };
 
   const deleteIdFromFav = (movieId) => {
-    setFavIds(favIds.filter(id => id !== movieId.toString()))
-  }
-  
-  const addMovieToFav = async ({movie: {id, title, poster_path}}) => {
-    const MovieData = {movieId: id, movieTitle: title, posterUrl: poster_path}
-    if(favIds.includes(MovieData.movieId.toString()))
-      return toast("already in fav")
-    favMovies.push(MovieData)
-    setFavMovies(favMovies)
-    addIdToFav(id)
-    toast(`${title} added to favourite`, toastOption)
-    await addFavMovie(MovieData)
-  }
-  
-  const deleteMovieFromFav = async ({movieId, title}) => {
-    if(!favIds.includes(movieId.toString()))
-      return toast("Cann't delte this movie")
-    setFavMovies(favMovies.filter(movie => movie.movieId !== movieId))
-    toast(`${title} deleted from favourite`, toastOption)
-    deleteIdFromFav(movieId)
-    await deleteFavMovie({movieId})
-  }
-  
+    setFavIds(favIds.filter((id) => id !== movieId.toString()));
+  };
+
+  const addMovieToFav = async ({ movie: { id, title, poster_path } }) => {
+    const MovieData = {
+      movieId: id,
+      movieTitle: title,
+      posterUrl: poster_path,
+    };
+    if (favIds.includes(MovieData.movieId.toString()))
+      return toast("already in fav");
+    favMovies.push(MovieData);
+    setFavMovies(favMovies);
+    addIdToFav(id);
+    toast(`${title} added to favourite`, toastOption);
+    await addFavMovie(MovieData);
+  };
+
+  const deleteMovieFromFav = async ({ movieId, title }) => {
+    if (!favIds.includes(movieId.toString()))
+      return toast("Cann't delte this movie");
+    setFavMovies(favMovies.filter((movie) => movie.movieId !== movieId));
+    toast(`${title} deleted from favourite`, toastOption);
+    deleteIdFromFav(movieId);
+    await deleteFavMovie({ movieId });
+  };
+
   const addIdToWatched = (id) => {
-    watchedIds.push(id.toString())
-    setWatchedIds(watchedIds)
-  }
-  
-  const addWatchMovie = async ({movie: {id, title, poster_path}}) => {
-    const watchedAt = new Date().toISOString()
-    const MovieData = {movieId: id, movieTitle: title, posterUrl: poster_path, watchedAt}
-    watchedMovies.push(MovieData)
-    setWatchedMovies(watchedMovies)
-    addIdToWatched(id)
-    await addWatchedMovie(MovieData)
-  }
+    watchedIds.push(id.toString());
+    setWatchedIds(watchedIds);
+  };
 
+  const addWatchMovie = async ({ movie: { id, title, poster_path } }) => {
+    const watchedAt = new Date().toISOString();
+    const MovieData = {
+      movieId: id,
+      movieTitle: title,
+      posterUrl: poster_path,
+      watchedAt,
+    };
+    watchedMovies.push(MovieData);
+    setWatchedMovies(watchedMovies);
+    addIdToWatched(id);
+    await addWatchedMovie(MovieData);
+  };
 
-  useEffect(() => {
-    async function getData() {
+const getUserFunc = async () => {
       try {
         if (userState.username) {
           setUser(userState);
@@ -120,37 +133,50 @@ export default function App() {
       }
     }
 
-    getData();
+
+  useEffect(() => {
+    getUserFunc();
   }, []);
 
   useEffect(() => {
     async function getData() {
       setFavIdsIsLoading(true);
-      setWatchedIsLoading(true)
-      const favRes = await getFavMovies();
-      const watchedRes = await getWatchedMovie();
-      setFavMovies(favRes.data.data);
-      if (favRes.data.success) {
-        const f = await favRes.data.data.map((m) => {
-          return m.movieId;
-        });
-        setFavIds(f);
-      }
-      setWatchedMovies(watchedRes.data.data)
-      if(watchedRes.data.success) {
-        const watched = watchedRes.data.data.map((movie)=> {
-            return movie.movieId
+      setWatchedIsLoading(true);
+      console.log("i will fetch now");
+      getFavMovies()
+        .then(async (res) => {
+          if (res.data.success) {
+            const f = await res.data.data.map((m) => {
+              return m.movieId;
+            });
+            setFavIds(f);
+          }
+          setFavMovies(res.data.data);
         })
-        setWatchedIds(watched)
-      }
+        .catch((error) => {
+          console.log(error)
+          navigate("/log-in");
+        });
+      getWatchedMovie().then((res) => {
+        setWatchedMovies(res.data.data);
+        if (res.data.success) {
+          const watched = res.data.data.map((movie) => {
+            return movie.movieId;
+          });
+          setWatchedIds(watched);
+        }
+      }).catch((error) =>{
+        console.log(error)
+      });
+
       setFavIdsIsLoading(false);
-      setWatchedIsLoading(false)
+      setWatchedIsLoading(false);
     }
 
     getData();
   }, []);
   return (
-    <BrowserRouter>
+    <>
       <Navbar user={user} />
       <Routes>
         <Route
@@ -162,19 +188,33 @@ export default function App() {
               </div>
             ) : (
               <Home
-              watchedIds={watchedIds}
-              fetchMovies={fetchMovies}
-              moviesList={moviesList}
+                watchedIds={watchedIds}
+                fetchMovies={fetchMovies}
+                moviesList={moviesList}
                 deleteMovieFromFav={deleteMovieFromFav}
                 addMovieToFav={addMovieToFav}
                 favIds={favIds}
-                />
+              />
             )
           }
         />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/log-in" element={<LogIn />} />
-        <Route path="/movie/:id" element={watchedIsLoading? <Loading />: <MoviePage user={user} addWatchMovie={addWatchMovie} moviesList={moviesList} watchedIds={watchedIds} />} />
+        <Route path="/log-in" element={<LogIn getUserFunc={getUserFunc} />} />
+        <Route
+          path="/movie/:id"
+          element={
+            watchedIsLoading ? (
+              <Loading />
+            ) : (
+              <MoviePage
+                user={user}
+                addWatchMovie={addWatchMovie}
+                moviesList={moviesList}
+                watchedIds={watchedIds}
+              />
+            )
+          }
+        />
         <Route
           path="/profile"
           element={
@@ -189,8 +229,9 @@ export default function App() {
               <Loading />
             )
           }
-        />
+          />
       </Routes>
-    </BrowserRouter>
+
+          </>
   );
 }
