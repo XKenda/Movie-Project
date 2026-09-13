@@ -32,8 +32,9 @@ app.use('/api/v1/comment', commentRouter)
 
 app.use(errorHandler)
 
+await connectToMongoDB();
 
 app.listen(PORT, async ()=>{
     console.log(`Backend listend on http://localhost:${PORT}`)
-    await connectToMongoDB();
+
 })
