@@ -174,7 +174,7 @@ const getUserFunc = async () => {
     }
 
     getData();
-  }, []);
+  }, [user]);
   return (
     <>
       <Navbar user={user} />
