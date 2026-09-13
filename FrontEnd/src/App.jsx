@@ -142,8 +142,8 @@ const getUserFunc = async () => {
     async function getData() {
       setFavIdsIsLoading(true);
       setWatchedIsLoading(true);
-      console.log("i will fetch now");
-      getFavMovies()
+
+      await getFavMovies()
         .then(async (res) => {
           if (res.data.success) {
             const f = await res.data.data.map((m) => {
@@ -157,7 +157,7 @@ const getUserFunc = async () => {
           console.log(error)
           navigate("/log-in");
         });
-      getWatchedMovie().then((res) => {
+      await getWatchedMovie().then((res) => {
         setWatchedMovies(res.data.data);
         if (res.data.success) {
           const watched = res.data.data.map((movie) => {
