@@ -6,7 +6,7 @@ import { favouriteMovies } from "../schema/favouriteMovie.schema.js"
 
 export const incCount = async (movieId, incNum = 1) => {
     try {
-        const movie = await TMovie.findOneAndUpdate({ movieId }, { $inc: { count: incNum } }, { new: true })
+        const movie = await TMovie.findOneAndUpdate({ movieId }, { $inc: { count: incNum } }, { returnDocument: "after" })
         if (!movie) return false
 
         await movie.save()
